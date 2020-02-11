@@ -22,7 +22,7 @@ data BExpr = BoolConst Bool
             | Greater AExpr AExpr
             | Less AExpr AExpr
             | Equal AExpr AExpr
-             
+
 
 type Var = String
 data AExpr = Var String
@@ -32,7 +32,7 @@ data AExpr = Var String
             | Subtract AExpr AExpr
             | Multiply AExpr AExpr
             | Mod AExpr AExpr
-            
+
 
 
 data Stmt = Seq [Stmt]
@@ -40,7 +40,7 @@ data Stmt = Seq [Stmt]
            | If BExpr Stmt Stmt
            | While BExpr Stmt
            | Skip
-           
+
 instance Show AExpr where
   show (IntConst n) = show n
   show (Var s) = s
@@ -215,8 +215,8 @@ evalB(Greater a1 a2) s = evalA a1 s > evalA a2 s
 evalB(Less a1 a2) s = evalA a1 s < evalA a2 s
 evalB(Equal a1 a2) s = evalA a1 s == evalA a2 s
 
-evalStmt :: Stmt -> Map.Map String Integer -> Map.Map String Integer
-evalStmt(Skip) s = s
+evalStmt :: Stmt -> Map.Map String Integer -> (Stmt, Map.Map String Integer)
+evalStmt(Skip) s = (Skip, s)
 evalStmt(Assign x a) s = Map.insert x (evalA a s) s
 evalStmt(While b st) s | evalB b s /= False = evalStmt(Seq [st,While b st]) s
                        | otherwise  = s
@@ -251,4 +251,3 @@ main = do
   putStrLn $ filter (/= '\n')printable
 
 
---can't get pretty working. created a class Pretty with nothing, but pretty is not a visible method
