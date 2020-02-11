@@ -10,6 +10,11 @@ import Data.Char (isSpace)
 import Data.List
 import Data.String
 import qualified Data.Map.Strict as Map
+
+
+
+
+
 data BExpr = BoolConst Bool
             | Not BExpr
             | And BExpr BExpr
@@ -17,15 +22,8 @@ data BExpr = BoolConst Bool
             | Greater AExpr AExpr
             | Less AExpr AExpr
             | Equal AExpr AExpr
-             deriving (Show)
-instance Pretty BExp where
-  pretty (BoolConst True) = "true"
-  pretty (BoolConst False) = "false"
-  pretty (Equal a b) = "(" ++ pretty a ++ "=" ++ pretty b ++ ")"
-  pretty (Less a b) = "(" ++ pretty a ++ "<" ++ pretty b ++ ")"
-  pretty (Not a) = "¬" ++ pretty a
-  pretty (Or a b) = "(" ++ pretty a ++ "∨" ++ pretty b ++ ")"
-  pretty (And a b) = "(" ++ pretty a ++ "∧" ++ pretty b ++ ")"
+             
+
 type Var = String
 data AExpr = Var String
             | IntConst Integer
@@ -34,13 +32,7 @@ data AExpr = Var String
             | Subtract AExpr AExpr
             | Multiply AExpr AExpr
             | Mod AExpr AExpr
-            deriving (Show)
-instance Pretty AExpr where
-  pretty (IntConst n) = show n
-  pretty (Var s) = s
-  pretty (Add a b) = "(" ++ pretty a ++ "+" ++ pretty b ++ ")"
-  pretty (Subtract a b) = "(" ++ pretty a ++ "-" ++ pretty b ++ ")"
-  pretty (Multiply a b) = "(" ++ pretty a ++ "*" ++ pretty b ++ ")"
+            
 
 
 data Stmt = Seq [Stmt]
@@ -48,14 +40,29 @@ data Stmt = Seq [Stmt]
            | If BExpr Stmt Stmt
            | While BExpr Stmt
            | Skip
-           deriving (Show)
+           
+instance Show AExpr where
+  show (IntConst n) = show n
+  show (Var s) = s
+  show (Add a b) = "(" ++ show a ++ "+" ++ show b ++ ")"
+  show (Subtract a b) = "(" ++ show a ++ "-" ++ show b ++ ")"
+  show (Multiply a b) = "(" ++ show a ++ "*" ++ show b ++ ")"
 
-instance Pretty Stmt where
-  pretty Skip = "skip"
-  pretty (Assign s a) = s ++ " := " ++ pretty a
-  pretty (Seq a b) = pretty a ++ "; " ++ pretty b
-  pretty (If c a b) = "if " ++ pretty c ++ " then { " ++ pretty a ++ " } else { " ++ pretty b ++ " }"
-  pretty (While b c) = "while " ++ pretty b ++ " do { " ++ pretty c ++ " }"
+instance Show BExpr where
+  show (BoolConst True) = "true"
+  show (BoolConst False) = "false"
+  show (Equal a b) = "(" ++ show a ++ "=" ++ show b ++ ")"
+  show (Less a b) = "(" ++ show a ++ "<" ++ show b ++ ")"
+  show (Not a) = "¬" ++ show a
+  show (Or a b) = "(" ++ show a ++ "∨" ++ show b ++ ")"
+  show (And a b) = "(" ++ show a ++ "∧" ++ show b ++ ")"
+
+instance Show Stmt where
+  show Skip = "skip"
+  show (Assign s a) = s ++ " := " ++ show a
+  show (Seq [a, b]) = show a ++ "; " ++ show b
+  show (If c a b) = "if " ++ show c ++ " then { " ++ show a ++ " } else { " ++ show b ++ " }"
+  show (While b c) = "while " ++ show b ++ " do { " ++ show c ++ " }"
 
 
 languageDef =
@@ -244,3 +251,4 @@ main = do
   putStrLn $ filter (/= '\n')printable
 
 
+--can't get pretty working. created a class Pretty with nothing, but pretty is not a visible method
